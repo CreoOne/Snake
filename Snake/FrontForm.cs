@@ -1,17 +1,11 @@
 ﻿using EntityComponentFramework;
 using EntityComponentFramework.Processes;
-using Snake.Components;
 using Snake.Incubators;
 using Snake.MovementDirection;
 using Snake.Processes;
-using Snake.Snake;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Snake
@@ -45,7 +39,7 @@ namespace Snake
 
             HashSet<Entity> entities = new HashSet<Entity>
             {
-                new SnakeInkubator().Create(),
+                new SnakeIncubator().Create(),
                 new AppleIncubator().Create()
             };
 

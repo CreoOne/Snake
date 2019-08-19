@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Snake.Incubators
 {
-    public class SnakeInkubator : IIncubator
+    public class SnakeIncubator : IIncubator
     {
         public Entity Create()
         {

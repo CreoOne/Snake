@@ -87,7 +87,7 @@ namespace EntityComponentFramework
                 .Where(m => m.GetParameters().Count() == 0);
 
             foreach (MethodInfo method in allMethods)
-                TriggerMethod(method, process, new object[] { });
+                TriggerMethod(method, process, Array.Empty<object>());
         }
         
         private void TriggerMethod(MethodInfo method, object owner, object[] parameters)
