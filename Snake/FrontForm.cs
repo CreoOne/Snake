@@ -33,7 +33,7 @@ namespace Snake
             };
 
             List<IProcess> processes = new List<IProcess>();
-            processes.Add(new SnakeMovement());
+            processes.Add(new Movement());
             processes.Add(renderProcess);
             processes.Add(new Collision());
 
@@ -68,7 +68,7 @@ namespace Snake
             IMovementDirection movementDirection = MovementDirectionFactory.Create(e.KeyCode);
 
             if(movementDirection != null)
-                SnakeMovement.MovementDirection = movementDirection;
+                Movement.MovementDirection = movementDirection;
         }
     }
 }

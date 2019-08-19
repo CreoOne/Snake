@@ -6,12 +6,12 @@ using Snake.MovementDirection;
 
 namespace Snake.Processes
 {
-    public class SnakeMovement : IProcess
+    public class Movement : IProcess
     {
         public static IMovementDirection MovementDirection = new Up();
 
         [FrequencyLimited(GameConfig.SnakeMovementInterval, false)]
-        public void Execute([Has(typeof(Tail), typeof(Position))] Entity entity)
+        public void Move([Has(typeof(Tail), typeof(Position))] Entity entity)
         {
             Position position = entity.GetFirst<Position>();
             Tail tail = entity.GetFirst<Tail>();

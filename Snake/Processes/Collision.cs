@@ -19,7 +19,7 @@ namespace Snake.Processes
             {
                 entity.GetFirst<Position>().Center();
                 entity.GetFirst<Tail>().Parts.SetLength(0);
-                SnakeMovement.MovementDirection = new Up();
+                Movement.MovementDirection = new Up();
             }
         }
 
