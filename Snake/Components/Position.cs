@@ -11,12 +11,12 @@ namespace Snake.Components
 
         public void Random()
         {
-            Coordinates = new Vector2(RNG.Next(GameConfig.Width), RNG.Next(GameConfig.Height));
+            Coordinates = new Vector2(RNG.Next(GameConfig.BoardWidth), RNG.Next(GameConfig.BoardHeight));
         }
 
         public void Center()
         {
-            Coordinates = new Vector2(GameConfig.Width / 2, GameConfig.Height / 2);
+            Coordinates = new Vector2(GameConfig.BoardWidth / 2, GameConfig.BoardHeight / 2);
         }
     }
 }

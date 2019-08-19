@@ -10,8 +10,8 @@ namespace Snake.Snake
 
         public DynamicLengthBuffer(int initialLenght)
         {
-            Length = initialLenght;
             Items = new Queue<TItem>();
+            SetLength(initialLenght);
         }
 
         public void Add(TItem item)

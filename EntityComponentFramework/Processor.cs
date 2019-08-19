@@ -32,23 +32,11 @@ namespace EntityComponentFramework
                 if (!TriggerInstance(processType, process))
                     continue;
 
-                BeforeAllMethods(process, processType);
+                ExecuteAllMethods<BeforeAllAttribute>(process, processType);
                 ExecuteMethods(process, processType);
-                AfterAllMethods(process, processType);
+                ExecuteAllMethods<AfterAllAttribute>(process, processType);
             }
 
-        }
-
-        private void AfterAllMethods(IProcess process, Type processType)
-        {
-            IEnumerable<MethodInfo> afterAllMethods = processType
-                .GetMethods(Flags)
-                .Where(m => m.ReturnType.Equals(VoidType))
-                .Where(m => m.GetCustomAttribute<AfterAllAttribute>() != null)
-                .Where(m => m.GetParameters().Count() == 0);
-
-            foreach (MethodInfo method in afterAllMethods)
-                TriggerMethod(method, process, new object[] { });
         }
 
         private void ExecuteMethods(IProcess process, Type processType)
@@ -90,15 +78,15 @@ namespace EntityComponentFramework
                 .Where(e => hasAttribute.Components.All(ac => e.Any(ec => ac.Equals(ec.GetType()))));
         }
 
-        private void BeforeAllMethods(IProcess process, Type processType)
+        private void ExecuteAllMethods<TAttribute>(IProcess process, Type processType) where TAttribute : Attribute
         {
-            IEnumerable<MethodInfo> beforeAllMethods = processType
+            IEnumerable<MethodInfo> allMethods = processType
                 .GetMethods(Flags)
                 .Where(m => m.ReturnType.Equals(VoidType))
-                .Where(m => m.GetCustomAttribute<BeforeAllAttribute>() != null)
+                .Where(m => m.GetCustomAttribute<TAttribute>() != null)
                 .Where(m => m.GetParameters().Count() == 0);
 
-            foreach (MethodInfo method in beforeAllMethods)
+            foreach (MethodInfo method in allMethods)
                 TriggerMethod(method, process, new object[] { });
         }
         

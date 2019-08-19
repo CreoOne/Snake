@@ -19,25 +19,14 @@ namespace Snake
     public partial class FrontForm : Form
     {
         private Processor Processor;
-        private HashSet<Entity> Entities;
         private FrameCounter FrameCounter;
 
         public FrontForm()
         {
             InitializeComponent();
-            InitializeGame();
+            InitializeCanvasSize();
             FrontForm_Resize(this, EventArgs.Empty);
             FrameCounter = new FrameCounter();
-
-            Entities = new HashSet<Entity>
-            {
-                new SnakeInkubator().Create(),
-                new AppleIncubator().Create()
-            };
-
-            List<IProcess> processes = new List<IProcess>();
-
-            processes.Add(new SnakeMovement());
 
             Bitmap frame = new Bitmap(canvas.ClientSize.Width, canvas.ClientSize.Height);
             canvas.Image = frame;
@@ -48,17 +37,25 @@ namespace Snake
                 FrameCounter.Tick();
                 Text = string.Format("FPS: {0:00.00}", FrameCounter.SmoothFPS);
             };
-            processes.Add(renderProcess);
 
+            List<IProcess> processes = new List<IProcess>();
+            processes.Add(new SnakeMovement());
+            processes.Add(renderProcess);
             processes.Add(new Collision());
 
-            Processor = new Processor(processes, Entities);
+            HashSet<Entity> entities = new HashSet<Entity>
+            {
+                new SnakeInkubator().Create(),
+                new AppleIncubator().Create()
+            };
+
+            Processor = new Processor(processes, entities);
         }
 
-        private void InitializeGame()
+        private void InitializeCanvasSize()
         {
-            canvas.Width = GameConfig.Width * GameConfig.TileWidth;
-            canvas.Height = GameConfig.Height * GameConfig.TileHeight;
+            canvas.Width = GameConfig.BoardWidth * GameConfig.TileWidth;
+            canvas.Height = GameConfig.BoardHeight * GameConfig.TileHeight;
         }
 
         private void LogicTimer_Tick(object sender, EventArgs e)
