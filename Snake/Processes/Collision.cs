@@ -1,23 +1,20 @@
 ﻿using EntityComponentFramework;
 using EntityComponentFramework.Processes;
+using EntityComponentFramework.Processes.Attributes;
 using Snake.Components;
 using Snake.MovementDirection;
-using System.Drawing;
 using System.Linq;
 
 namespace Snake.Processes
 {
     public class Collision : IProcess
     {
-        public void Execute(Entity entity)
+        public void CollideSelf([Has(typeof(Tail), typeof(Position))] Entity entity)
         {
-            if (!entity.Has<Tail, Position>())
-                return;
-
             Position position = entity.GetFirst<Position>();
             Tail tail = entity.GetFirst<Tail>();
 
-            if (tail != null && (tail.Parts.Any(t => t == position.Coordinates) || OutOfBounds(position)))
+            if (tail.Parts.Any(t => t == position.Coordinates) || OutOfBounds(position))
             {
                 entity.GetFirst<Position>().Center();
                 entity.GetFirst<Tail>().Parts.SetLength(0);
@@ -25,11 +22,8 @@ namespace Snake.Processes
             }
         }
 
-        public void Execute(Entity primary, Entity secondary)
+        public void CollideEntities([Has(typeof(Tail), typeof(Position))] Entity primary, [Has(typeof(Apple), typeof(Position))] Entity secondary)
         {
-            if (!primary.Has<Tail, Position>() || !secondary.Has<Apple, Position>())
-                return;
-            
             Position primaryPosition = primary.GetFirst<Position>();
             Position secondaryPosition = secondary.GetFirst<Position>();
 

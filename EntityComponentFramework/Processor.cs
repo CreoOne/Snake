@@ -15,14 +15,12 @@ namespace EntityComponentFramework
         private HashSet<IProcess> Processes { get; }
         private HashSet<Entity> Entities { get; }
         private Dictionary<object, FrequencyLimiter> InstanceFrequencyLimiters { get; }
-        private Dictionary<MethodInfo, FrequencyLimiter> MethodFrequencyLimiters { get; }
 
         public Processor(IEnumerable<IProcess> processes, IEnumerable<Entity> entities)
         {
             Processes = new HashSet<IProcess>(processes);
             Entities = new HashSet<Entity>(entities);
             InstanceFrequencyLimiters = new Dictionary<object, FrequencyLimiter>();
-            MethodFrequencyLimiters = new Dictionary<MethodInfo, FrequencyLimiter>();
         }
 
         public void Advance()
@@ -31,7 +29,7 @@ namespace EntityComponentFramework
             {
                 Type processType = process.GetType();
 
-                if (!Trigger(processType, process))
+                if (!TriggerInstance(processType, process))
                     continue;
 
                 BeforeAllMethods(process, processType);
@@ -50,7 +48,7 @@ namespace EntityComponentFramework
                 .Where(m => m.GetParameters().Count() == 0);
 
             foreach (MethodInfo method in afterAllMethods)
-                Trigger(process, method, new object[] { });
+                TriggerMethod(method, process, new object[] { });
         }
 
         private void ExecuteMethods(IProcess process, Type processType)
@@ -62,20 +60,34 @@ namespace EntityComponentFramework
 
             foreach (MethodInfo method in executeMethods)
             {
-                switch (method.GetParameters().Length)
+                ParameterInfo[] parameters = method.GetParameters();
+
+                switch (parameters.Length)
                 {
                     case 1:
-                        foreach (Entity entity in Entities)
-                            Trigger(process, method, new[] { entity });
+
+                        foreach (Entity entity in FilterEntities(parameters[0], Entities))
+                            TriggerMethod(method, process, new[] { entity });
                         break;
 
                     case 2:
-                        foreach (Entity primary in Entities)
-                            foreach (Entity secondary in Entities)
-                                Trigger(process, method, new[] { primary, secondary });
+                        foreach (Entity primary in FilterEntities(parameters[0], Entities))
+                            foreach (Entity secondary in FilterEntities(parameters[1], Entities))
+                                TriggerMethod(method, process, new[] { primary, secondary });
                         break;
                 }
             }
+        }
+
+        private static IEnumerable<Entity> FilterEntities(ParameterInfo parameter, IEnumerable<Entity> entites)
+        {
+            HasAttribute hasAttribute = parameter.GetCustomAttribute<HasAttribute>();
+
+            if (hasAttribute == null)
+                return entites;
+
+            return entites
+                .Where(e => hasAttribute.Components.All(ac => e.Any(ec => ac.Equals(ec.GetType()))));
         }
 
         private void BeforeAllMethods(IProcess process, Type processType)
@@ -87,27 +99,16 @@ namespace EntityComponentFramework
                 .Where(m => m.GetParameters().Count() == 0);
 
             foreach (MethodInfo method in beforeAllMethods)
-                Trigger(process, method, new object[] { });
+                TriggerMethod(method, process, new object[] { });
         }
-
-        private void Trigger(IProcess owner, MethodInfo method, params object[] parameters)
+        
+        private void TriggerMethod(MethodInfo method, object owner, object[] parameters)
         {
-            FrequencyLimitedAttribute frequencyLimitedAttribute = method.GetCustomAttribute<FrequencyLimitedAttribute>();
-
-            if (frequencyLimitedAttribute == null)
-            {
-                method.Invoke(owner, parameters);
-                return;
-            }
-
-            if (!MethodFrequencyLimiters.ContainsKey(method))
-                MethodFrequencyLimiters.Add(method, new FrequencyLimiter(frequencyLimitedAttribute.Interval, frequencyLimitedAttribute.InitialTrigger));
-
-            if (MethodFrequencyLimiters[method].Trigger())
+            if (TriggerInstance(method, owner))
                 method.Invoke(owner, parameters);
         }
         
-        private bool Trigger(Type instanceType, object owner)
+        private bool TriggerInstance(MemberInfo instanceType, object owner)
         {
             FrequencyLimitedAttribute frequencyLimitedAttribute = instanceType.GetCustomAttribute<FrequencyLimitedAttribute>();
 

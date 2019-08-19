@@ -11,11 +11,8 @@ namespace Snake.Processes
         public static IMovementDirection MovementDirection = new Up();
 
         [FrequencyLimited(GameConfig.SnakeMovementInterval, false)]
-        public void Execute(Entity entity)
+        public void Execute([Has(typeof(Tail), typeof(Position))] Entity entity)
         {
-            if (!entity.Has<Tail, Position>())
-                return;
-
             Position position = entity.GetFirst<Position>();
             Tail tail = entity.GetFirst<Tail>();
 
