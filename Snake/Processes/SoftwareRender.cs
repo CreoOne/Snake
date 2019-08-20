@@ -4,6 +4,8 @@ using EntityComponentFramework.Processes.Attributes;
 using Snake.Components;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Numerics;
 
 namespace Snake.Processes
@@ -20,6 +22,7 @@ namespace Snake.Processes
         public SoftwareRender(Graphics context)
         {
             Context = context;
+            context.SmoothingMode = SmoothingMode.AntiAlias;
         }
 
         [BeforeAll]
@@ -30,24 +33,31 @@ namespace Snake.Processes
 
         public void Render(Entity entity)
         {
-            using (SolidBrush brush = new SolidBrush(Color.Black))
-                if(entity.Has<Tail, Position>())
-                { 
-                    Position position = entity.GetFirst<Position>();
-                    Context.FillRectangle(brush, position.Coordinates * TileSize, TileSize);
+            if (entity.Has<Tail, Position>())
+            {
+                float tailSize = Math.Min(TileSize.X, TileSize.Y);
+                Position position = entity.GetFirst<Position>();
+                Tail tail = entity.GetFirst<Tail>();
 
-                    Tail snake = entity.GetFirst<Tail>();
-                    foreach(Vector2 bodyPosition in snake.Parts)
-                        Context.FillRectangle(brush, bodyPosition * TileSize, TileSize);
-                }
-
-            using (SolidBrush brush = new SolidBrush(Color.Red))
-                if(entity.Has<Apple, Position>())
+                using (SolidBrush brush = new SolidBrush(Color.Black))
+                using (Pen pen = new Pen(Color.Black, tailSize))
                 {
-                    Position position = entity.GetFirst<Position>();
-                    Context.FillEllipse(brush, position.Coordinates * TileSize + Margin, AppleSize);
-                }
+                    pen.StartCap = pen.EndCap = LineCap.Round;
 
+                    if (tail.Parts.Count() > 0)
+                        Context.DrawLines(pen, Enumerable.Append(tail.Parts, position.Coordinates).Select(c => c * tailSize));
+
+                    else
+                        Context.FillEllipse(brush, position.Coordinates * TileSize, new Vector2(tailSize));
+                }
+            }
+
+            if (entity.Has<Apple, Position>())
+            {
+                Position position = entity.GetFirst<Position>();
+                using (SolidBrush brush = new SolidBrush(Color.Red))
+                    Context.FillEllipse(brush, position.Coordinates * TileSize + Margin, AppleSize);
+            }
         }
 
         [AfterAll]
