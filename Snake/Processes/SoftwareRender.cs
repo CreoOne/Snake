@@ -45,7 +45,9 @@ namespace Snake.Processes
                 {
                     pen.StartCap = pen.EndCap = LineCap.Round;
 
-                    if (tail.Parts.Count() > 0)
+                    bool isOnetiler = tail.Parts.Count() == 1 && (tail.Ending.Current - position.Coordinates.Current).Length() < 1e-2f;
+
+                    if (tail.Parts.Count() > 0 && !isOnetiler)
                     {
                         IEnumerable<Vector2> trace = Enumerable
                             .Append(tail.Parts, position.Coordinates.Current)
