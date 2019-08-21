@@ -16,8 +16,8 @@ namespace Snake.Processes
             Position position = entity.GetFirst<Position>();
             Tail tail = entity.GetFirst<Tail>();
 
-            tail.Parts.Add(position.Coordinates);
-            position.Coordinates = MovementDirection.Move(position.Coordinates);
+            tail.Add(position.Coordinates.Target);
+            position.Coordinates.Target = MovementDirection.Move(position.Coordinates.Target);
 
         }
     }

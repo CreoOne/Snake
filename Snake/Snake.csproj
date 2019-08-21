@@ -77,6 +77,7 @@
     <Compile Include="MovementDirection\Down.cs" />
     <Compile Include="Incubators\SnakeIncubator.cs" />
     <Compile Include="MovementDirection\Up.cs" />
+    <Compile Include="Tween.cs" />
     <EmbeddedResource Include="FrontForm.resx">
       <DependentUpon>FrontForm.cs</DependentUpon>
       <SubType>Designer</SubType>

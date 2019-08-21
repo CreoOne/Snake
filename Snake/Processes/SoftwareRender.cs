@@ -3,6 +3,7 @@ using EntityComponentFramework.Processes;
 using EntityComponentFramework.Processes.Attributes;
 using Snake.Components;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -45,10 +46,16 @@ namespace Snake.Processes
                     pen.StartCap = pen.EndCap = LineCap.Round;
 
                     if (tail.Parts.Count() > 0)
-                        Context.DrawLines(pen, Enumerable.Append(tail.Parts, position.Coordinates).Select(c => c * tailSize));
+                    {
+                        IEnumerable<Vector2> trace = Enumerable
+                            .Append(tail.Parts, position.Coordinates.Current)
+                            .Prepend(tail.Ending.Current);
+
+                        Context.DrawLines(pen, trace.Select(c => c * tailSize));
+                    }
 
                     else
-                        Context.FillEllipse(brush, position.Coordinates * TileSize, new Vector2(tailSize));
+                        Context.FillEllipse(brush, position.Coordinates.Current * TileSize, new Vector2(tailSize));
                 }
             }
 
@@ -56,7 +63,7 @@ namespace Snake.Processes
             {
                 Position position = entity.GetFirst<Position>();
                 using (SolidBrush brush = new SolidBrush(Color.Red))
-                    Context.FillEllipse(brush, position.Coordinates * TileSize + Margin, AppleSize);
+                    Context.FillEllipse(brush, position.Coordinates.Current * TileSize + Margin, AppleSize);
             }
         }
 

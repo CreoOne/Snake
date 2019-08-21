@@ -7,16 +7,31 @@ namespace Snake.Components
     public class Position : IComponent
     {
         private static readonly Random RNG = new Random(DateTime.UtcNow.Millisecond);
-        public Vector2 Coordinates { get; set; }
+        public Tween<Vector2> Coordinates { get; set; }
 
-        public void Random()
+        public Position(TimeSpan tweenSpan, Func<double, Vector2, Vector2, Vector2> morph)
         {
-            Coordinates = new Vector2(RNG.Next(GameConfig.BoardWidth), RNG.Next(GameConfig.BoardHeight));
+            Coordinates = new Tween<Vector2>(tweenSpan, morph, Vector2.Zero);
         }
 
-        public void Center()
+        public void TeleportRandom()
         {
-            Coordinates = new Vector2(GameConfig.BoardWidth / 2, GameConfig.BoardHeight / 2);
+            SetCoordinates(new Vector2(RNG.Next(GameConfig.BoardWidth), RNG.Next(GameConfig.BoardHeight)));
+        }
+
+        public void MoveRandom()
+        {
+            Coordinates.Target = new Vector2(RNG.Next(GameConfig.BoardWidth), RNG.Next(GameConfig.BoardHeight));
+        }
+
+        public void TeleportCenter()
+        {
+            SetCoordinates(new Vector2(GameConfig.BoardWidth / 2, GameConfig.BoardHeight / 2));
+        }
+
+        private void SetCoordinates(Vector2 vector)
+        {
+            Coordinates = new Tween<Vector2>(Coordinates.Span, Coordinates.Morph, vector);
         }
     }
 }

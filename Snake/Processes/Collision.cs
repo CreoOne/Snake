@@ -15,9 +15,9 @@ namespace Snake.Processes
             Position position = entity.GetFirst<Position>();
             Tail tail = entity.GetFirst<Tail>();
 
-            if (tail.Parts.Any(t => Collides(t, position.Coordinates)) || OutOfBounds(position))
+            if (tail.Parts.Any(t => Collides(t, position.Coordinates.Target)) || OutOfBounds(position))
             {
-                entity.GetFirst<Position>().Center();
+                entity.GetFirst<Position>().TeleportCenter();
                 entity.GetFirst<Tail>().Parts.SetLength(0);
                 Movement.MovementDirection = new Up();
             }
@@ -28,16 +28,16 @@ namespace Snake.Processes
             Position primaryPosition = primary.GetFirst<Position>();
             Position secondaryPosition = secondary.GetFirst<Position>();
 
-            if (Collides(primaryPosition.Coordinates, secondaryPosition.Coordinates))
+            if (Collides(primaryPosition.Coordinates.Target, secondaryPosition.Coordinates.Target))
             {
                 primary.GetFirst<Tail>().Enlarge();
-                secondary.GetFirst<Position>().Random();
+                secondary.GetFirst<Position>().MoveRandom();
             }
         }
 
         private bool OutOfBounds(Position position)
         {
-            return position.Coordinates.X < 0 || position.Coordinates.Y < 0 || position.Coordinates.X >= GameConfig.BoardWidth || position.Coordinates.Y >= GameConfig.BoardHeight;
+            return position.Coordinates.Target.X < 0 || position.Coordinates.Target.Y < 0 || position.Coordinates.Target.X >= GameConfig.BoardWidth || position.Coordinates.Target.Y >= GameConfig.BoardHeight;
         }
 
         private bool Collides(Vector2 primary, Vector2 secondary)
