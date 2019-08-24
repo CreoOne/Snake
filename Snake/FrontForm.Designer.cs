@@ -43,7 +43,7 @@
             // canvas
             // 
             this.canvas.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.canvas.Location = new System.Drawing.Point(92, 26);
+            this.canvas.Location = new System.Drawing.Point(244, 23);
             this.canvas.Name = "canvas";
             this.canvas.Size = new System.Drawing.Size(400, 400);
             this.canvas.TabIndex = 0;
@@ -53,7 +53,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(867, 450);
             this.Controls.Add(this.canvas);
             this.Name = "FrontForm";
             this.ShowIcon = false;

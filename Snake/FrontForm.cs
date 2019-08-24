@@ -1,5 +1,6 @@
 ﻿using EntityComponentFramework;
 using EntityComponentFramework.Processes;
+using Snake.Engine;
 using Snake.Incubators;
 using Snake.MovementDirection;
 using Snake.Processes;
@@ -29,7 +30,11 @@ namespace Snake
             {
                 canvas.Refresh();
                 FrameCounter.Tick();
-                Text = string.Format("FPS: {0:00.00}", FrameCounter.SmoothFPS);
+
+                if (GameConfig.Paused)
+                    Text = "Game PAUSED | Space key to unpause.";
+                else
+                    Text = string.Format("FPS: {0:00.00} Score: {1:000} Turns: {2:000} Tiles: {3:000}, Fill: {4:00%}, Rating: {5:0000}", FrameCounter.SmoothFPS, StatisticsMonitor.Score, StatisticsMonitor.Turns, StatisticsMonitor.Tiles, StatisticsMonitor.Fill, StatisticsMonitor.Rating);
             };
 
             List<IProcess> processes = new List<IProcess>();
@@ -67,8 +72,17 @@ namespace Snake
         {
             IMovementDirection movementDirection = MovementDirectionFactory.Create(e.KeyCode);
 
-            if(movementDirection != null)
+            if (movementDirection != null && movementDirection.GetType() != Movement.MovementDirection.GetType())
+            {
                 Movement.MovementDirection = movementDirection;
+                StatisticsMonitor.IncrementTurns();
+            }
+
+            if (e.KeyCode == Keys.Space)
+            {
+                GameConfig.Paused = !GameConfig.Paused;
+                SoftwareRender.BackgroundColor.Target = GameConfig.Paused ? GameConfig.PausedBackground : GameConfig.UnpausedBackground;
+            }
         }
     }
 }

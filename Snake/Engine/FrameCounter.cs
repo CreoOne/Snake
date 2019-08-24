@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Snake
+namespace Snake.Engine
 {
     public class FrameCounter
     {
@@ -14,7 +14,7 @@ namespace Snake
             Delta = (DateTime.UtcNow - PreviousTime).TotalMilliseconds / 1000;
             PreviousTime = DateTime.UtcNow;
             FPS = 1 / Delta;
-            SmoothFPS = (SmoothFPS * (FPS - 1) + FPS) / FPS;
+            SmoothFPS = RollingAverage.Average(SmoothFPS, FPS, FPS);
         }
     }
 }

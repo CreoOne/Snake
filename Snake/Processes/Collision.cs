@@ -2,6 +2,7 @@
 using EntityComponentFramework.Processes;
 using EntityComponentFramework.Processes.Attributes;
 using Snake.Components;
+using Snake.Engine;
 using Snake.MovementDirection;
 using System.Linq;
 using System.Numerics;
@@ -20,6 +21,7 @@ namespace Snake.Processes
                 entity.GetFirst<Position>().TeleportCenter();
                 entity.GetFirst<Tail>().Parts.SetLength(0);
                 Movement.MovementDirection = new Up();
+                StatisticsMonitor.Reset();
             }
         }
 
@@ -32,6 +34,7 @@ namespace Snake.Processes
             {
                 primary.GetFirst<Tail>().Enlarge();
                 secondary.GetFirst<Position>().MoveRandom();
+                StatisticsMonitor.IncrementScore();
             }
         }
 

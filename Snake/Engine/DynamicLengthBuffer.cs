@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace Snake.Snake
+namespace Snake.Snake.Engine
 {
     public sealed class DynamicLengthBuffer<TItem> : IEnumerable<TItem>
     {

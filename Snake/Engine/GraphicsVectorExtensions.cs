@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Numerics;
 
-namespace Snake
+namespace Snake.Engine
 {
     public static class GraphicsVectorExtensions
     {

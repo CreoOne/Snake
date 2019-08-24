@@ -13,7 +13,7 @@ namespace Snake.Incubators
         {
             List<IComponent> apple = new List<IComponent>();
             apple.Add(new Apple());
-            Position position = new Position(TimeSpan.FromMilliseconds(200), Morph);
+            Position position = new Position(TimeSpan.FromMilliseconds(100), Morph);
             position.TeleportRandom();
             apple.Add(position);
             return new Entity(apple);

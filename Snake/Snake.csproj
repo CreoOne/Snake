@@ -50,9 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FrameCounter.cs" />
-    <Compile Include="GameConfig.cs" />
-    <Compile Include="GraphicsVectorExtensions.cs" />
+    <Compile Include="Engine\FrameCounter.cs" />
+    <Compile Include="Engine\GameConfig.cs" />
+    <Compile Include="Engine\GraphicsVectorExtensions.cs" />
+    <Compile Include="Engine\RollingAverage.cs" />
+    <Compile Include="Engine\StatisticsMonitor.cs" />
     <Compile Include="Incubators\AppleIncubator.cs" />
     <Compile Include="Components\Apple.cs" />
     <Compile Include="Components\Position.cs" />
@@ -70,7 +72,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MovementDirection\IMovementDirection.cs" />
-    <Compile Include="DynamicLengthBuffer.cs" />
+    <Compile Include="Engine\DynamicLengthBuffer.cs" />
     <Compile Include="MovementDirection\MovementDirectionFactory.cs" />
     <Compile Include="MovementDirection\Right.cs" />
     <Compile Include="MovementDirection\Left.cs" />
